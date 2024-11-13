@@ -1,1 +1,9 @@
-react
+Student Management System Frontend
+A simple React application for managing student records with basic CRUD operations.
+Features
+
+Student Login
+Student Registration
+View Student Records
+Update Student Information
+Delete Student Records

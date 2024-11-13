@@ -1,46 +1,29 @@
-import * as React from 'react';
-import {
-  Box,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Typography,
-  Button,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  TextField
-} from '@mui/material';
+import { useState, useEffect } from 'react';
+import { studentApi } from '../services/api';
 
 export default function ViewStudent() {
-  const [students, setStudents] = React.useState([]);
-  const [open, setOpen] = React.useState(false);
-  const [selectedStudent, setSelectedStudent] = React.useState(null);
-  const [editFormData, setEditFormData] = React.useState({
+  const [students, setStudents] = useState([]);
+  const [selectedStudent, setSelectedStudent] = useState(null);
+  const [editFormData, setEditFormData] = useState({
     firstName: '',
     lastName: '',
     studentEmail: '',
     studentUsername: '',
     studentPassword: ''
   });
+  const [error, setError] = useState('');
 
-  // Fetch students on component mount
-  React.useEffect(() => {
+  useEffect(() => {
     fetchStudents();
   }, []);
 
-  const fetchStudents = () => {
-    fetch("http://localhost:8080/student/get")
-      .then(res => res.json())
-      .then(data => {
-        setStudents(data);
-      })
-      .catch(error => console.error("Error fetching students:", error));
+  const fetchStudents = async () => {
+    try {
+      const data = await studentApi.getAllStudents();
+      setStudents(data);
+    } catch (err) {
+      setError('Failed to fetch students');
+    }
   };
 
   const handleUpdate = (student) => {
@@ -53,163 +36,130 @@ export default function ViewStudent() {
       studentUsername: student.studentUsername,
       studentPassword: student.studentPassword
     });
-    setOpen(true);
   };
 
-  const handleDelete = (studentId) => {
+  const handleDelete = async (studentId) => {
     if (window.confirm('Are you sure you want to delete this student?')) {
-      fetch(`http://localhost:8080/student/delete/${studentId}`, {
-        method: 'DELETE'
-      })
-        .then(response => {
-          if (response.ok) {
-            fetchStudents(); // Refresh the list
-          }
-        })
-        .catch(error => console.error("Error deleting student:", error));
+      try {
+        await studentApi.deleteStudent(studentId);
+        fetchStudents();
+      } catch (err) {
+        setError('Failed to delete student');
+      }
     }
   };
 
-  const handleSaveUpdate = () => {
-    fetch('http://localhost:8080/student/update', {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(editFormData)
-    })
-      .then(response => {
-        if (response.ok) {
-          setOpen(false);
-          fetchStudents(); // Refresh the list
-        }
-      })
-      .catch(error => console.error("Error updating student:", error));
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  const handleFormChange = (event) => {
-    const { name, value } = event.target;
-    setEditFormData(prevData => ({
-      ...prevData,
-      [name]: value
-    }));
+  const handleSaveUpdate = async (e) => {
+    e.preventDefault();
+    try {
+      await studentApi.updateStudent(editFormData);
+      setSelectedStudent(null);
+      fetchStudents();
+    } catch (err) {
+      setError('Failed to update student');
+    }
   };
 
   return (
-    <Box sx={{ p: 3 }}>
-      <Typography variant="h5" component="h2" gutterBottom sx={{ color: '#2074d4', mb: 3 }}>
-        Student Records
-      </Typography>
-      
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }}>
-          <TableHead>
-            <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
-              <TableCell>ID</TableCell>
-              <TableCell>First Name</TableCell>
-              <TableCell>Last Name</TableCell>
-              <TableCell>Email</TableCell>
-              <TableCell>Username</TableCell>
-              <TableCell align="center">Actions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
+    <div className="view-student-page">
+      <h2 className="table-title">Student Records</h2>
+      {error && <div className="error-message">{error}</div>}
+      <div className="table-container">
+        <table className="student-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>First Name</th>
+              <th>Last Name</th>
+              <th>Email</th>
+              <th>Username</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
             {students.map((student) => (
-              <TableRow key={student.studentId}>
-                <TableCell>{student.studentId}</TableCell>
-                <TableCell>{student.firstName}</TableCell>
-                <TableCell>{student.lastName}</TableCell>
-                <TableCell>{student.studentEmail}</TableCell>
-                <TableCell>{student.studentUsername}</TableCell>
-                <TableCell align="center">
-                  <Button 
-                    variant="contained" 
-                    color="primary" 
-                    size="small" 
-                    onClick={() => handleUpdate(student)}
-                    sx={{ mr: 1 }}
-                  >
+              <tr key={student.studentId}>
+                <td>{student.studentId}</td>
+                <td>{student.firstName}</td>
+                <td>{student.lastName}</td>
+                <td>{student.studentEmail}</td>
+                <td>{student.studentUsername}</td>
+                <td className="action-buttons">
+                  <button className="update-button" onClick={() => handleUpdate(student)}>
                     Update
-                  </Button>
-                  <Button 
-                    variant="contained" 
-                    color="error" 
-                    size="small"
-                    onClick={() => handleDelete(student.studentId)}
-                  >
+                  </button>
+                  <button className="delete-button" onClick={() => handleDelete(student.studentId)}>
                     Delete
-                  </Button>
-                </TableCell>
-              </TableRow>
+                  </button>
+                </td>
+              </tr>
             ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+          </tbody>
+        </table>
+      </div>
 
-      {/* Update Dialog */}
-      <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Update Student</DialogTitle>
-        <DialogContent>
-          <TextField
-            margin="dense"
-            name="firstName"
-            label="First Name"
-            type="text"
-            fullWidth
-            variant="outlined"
-            value={editFormData.firstName}
-            onChange={handleFormChange}
-          />
-          <TextField
-            margin="dense"
-            name="lastName"
-            label="Last Name"
-            type="text"
-            fullWidth
-            variant="outlined"
-            value={editFormData.lastName}
-            onChange={handleFormChange}
-          />
-          <TextField
-            margin="dense"
-            name="studentEmail"
-            label="Email"
-            type="email"
-            fullWidth
-            variant="outlined"
-            value={editFormData.studentEmail}
-            onChange={handleFormChange}
-          />
-          <TextField
-            margin="dense"
-            name="studentUsername"
-            label="Username"
-            type="text"
-            fullWidth
-            variant="outlined"
-            value={editFormData.studentUsername}
-            onChange={handleFormChange}
-          />
-          <TextField
-            margin="dense"
-            name="studentPassword"
-            label="Password"
-            type="password"
-            fullWidth
-            variant="outlined"
-            value={editFormData.studentPassword}
-            onChange={handleFormChange}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleSaveUpdate} variant="contained">Save</Button>
-        </DialogActions>
-      </Dialog>
-    </Box>
+      {selectedStudent && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <h3 className="modal-title">Update Student</h3>
+            <form onSubmit={handleSaveUpdate}>
+              <div className="input-group">
+                <label>First Name</label>
+                <input
+                  type="text"
+                  value={editFormData.firstName}
+                  onChange={(e) => setEditFormData({...editFormData, firstName: e.target.value})}
+                  required
+                />
+              </div>
+              <div className="input-group">
+                <label>Last Name</label>
+                <input
+                  type="text"
+                  value={editFormData.lastName}
+                  onChange={(e) => setEditFormData({...editFormData, lastName: e.target.value})}
+                  required
+                />
+              </div>
+              <div className="input-group">
+                <label>Email</label>
+                <input
+                  type="email"
+                  value={editFormData.studentEmail}
+                  onChange={(e) => setEditFormData({...editFormData, studentEmail: e.target.value})}
+                  required
+                />
+              </div>
+              <div className="input-group">
+                <label>Username</label>
+                <input
+                  type="text"
+                  value={editFormData.studentUsername}
+                  onChange={(e) => setEditFormData({...editFormData, studentUsername: e.target.value})}
+                  required
+                />
+              </div>
+              <div className="input-group">
+                <label>Password</label>
+                <input
+                  type="password"
+                  value={editFormData.studentPassword}
+                  onChange={(e) => setEditFormData({...editFormData, studentPassword: e.target.value})}
+                  required
+                />
+              </div>
+              <div className="modal-buttons">
+                <button type="button" className="modal-cancel" onClick={() => setSelectedStudent(null)}>
+                  Cancel
+                </button>
+                <button type="submit" className="modal-save">
+                  Save Changes
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
