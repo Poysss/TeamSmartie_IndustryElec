@@ -7,7 +7,7 @@ const FlashcardItem = ({ flashcard, onDelete, onUpdate }) => {
     const handleEditClick = () => {
         setIsEditing(true);
     };
-
+//jhgktkkjgy
     const handleSaveClick = () => {
         onUpdate(updatedFlashcard); // Call the update function with the modified flashcard
         setIsEditing(false); // Exit edit mode
