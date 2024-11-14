@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { User, Lock, UserPlus, GraduationCap } from 'lucide-react';
 import { studentApi } from '../services/api';
 
 export default function StudentLogin() {
@@ -27,31 +28,43 @@ export default function StudentLogin() {
   return (
     <div className="login-page">
       <div className="login-container">
-        <h2>Student Login</h2>
+        <div className="login-header">
+          <GraduationCap size={48} className="login-logo" />
+          <h2>Student Login</h2>
+        </div>
         {error && <div className="error-message">{error}</div>}
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <input
-              type="text"
-              placeholder="Username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-            />
+            <div className="input-icon-wrapper">
+              <User size={20} className="input-icon" />
+              <input
+                type="text"
+                placeholder="Username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+              />
+            </div>
           </div>
           <div className="form-group">
-            <input
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
+            <div className="input-icon-wrapper">
+              <Lock size={20} className="input-icon" />
+              <input
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
           </div>
           <button type="submit" className="login-button">Login</button>
         </form>
         <div className="register-link">
-          <p>New Student? <Link to="/register">Register Here</Link></p>
+          <p>
+            <UserPlus size={16} className="register-icon" />
+            New Student? <Link to="/register">Register Here</Link>
+          </p>
         </div>
       </div>
     </div>

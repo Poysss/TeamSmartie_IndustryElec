@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Edit, Trash2, Save, X, Search, UserPlus, Users } from 'lucide-react';
 import { studentApi } from '../services/api';
 
 export default function ViewStudent() {
@@ -12,6 +13,7 @@ export default function ViewStudent() {
     studentPassword: ''
   });
   const [error, setError] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     fetchStudents();
@@ -60,10 +62,34 @@ export default function ViewStudent() {
     }
   };
 
+  const filteredStudents = students.filter(student =>
+    student.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    student.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    student.studentEmail.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    student.studentUsername.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="view-student-page">
-      <h2 className="table-title">Student Records</h2>
+      <div className="view-student-header">
+        <div className="header-title">
+          <Users size={32} className="header-icon" />
+          <h2 className="table-title">Student Records</h2>
+        </div>
+        <div className="search-bar">
+          <Search size={20} className="search-icon" />
+          <input
+            type="text"
+            placeholder="Search students..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="search-input"
+          />
+        </div>
+      </div>
+
       {error && <div className="error-message">{error}</div>}
+      
       <div className="table-container">
         <table className="student-table">
           <thead>
@@ -77,7 +103,7 @@ export default function ViewStudent() {
             </tr>
           </thead>
           <tbody>
-            {students.map((student) => (
+            {filteredStudents.map((student) => (
               <tr key={student.studentId}>
                 <td>{student.studentId}</td>
                 <td>{student.firstName}</td>
@@ -86,10 +112,12 @@ export default function ViewStudent() {
                 <td>{student.studentUsername}</td>
                 <td className="action-buttons">
                   <button className="update-button" onClick={() => handleUpdate(student)}>
-                    Update
+                    <Edit size={16} />
+                    <span>Update</span>
                   </button>
                   <button className="delete-button" onClick={() => handleDelete(student.studentId)}>
-                    Delete
+                    <Trash2 size={16} />
+                    <span>Delete</span>
                   </button>
                 </td>
               </tr>
@@ -101,7 +129,10 @@ export default function ViewStudent() {
       {selectedStudent && (
         <div className="modal-overlay">
           <div className="modal">
-            <h3 className="modal-title">Update Student</h3>
+            <div className="modal-header">
+              <UserPlus size={24} className="modal-icon" />
+              <h3 className="modal-title">Update Student</h3>
+            </div>
             <form onSubmit={handleSaveUpdate}>
               <div className="input-group">
                 <label>First Name</label>
@@ -150,10 +181,12 @@ export default function ViewStudent() {
               </div>
               <div className="modal-buttons">
                 <button type="button" className="modal-cancel" onClick={() => setSelectedStudent(null)}>
-                  Cancel
+                  <X size={16} />
+                  <span>Cancel</span>
                 </button>
                 <button type="submit" className="modal-save">
-                  Save Changes
+                  <Save size={16} />
+                  <span>Save Changes</span>
                 </button>
               </div>
             </form>
