@@ -1,0 +1,700 @@
+
+
+.container {
+    min-height: 100vh;
+    background-color: #0ea5e9;
+  }
+  
+  nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    background-color: white;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .logo-section {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .logo-square {
+    width: 2rem;
+    height: 2rem;
+    background-color: #fbbf24;
+    border-radius: 0.25rem;
+  }
+  
+  .logo-text {
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+  
+  .profile-circle {
+    width: 2rem;
+    height: 2rem;
+    background-color: #e5e7eb;
+    border-radius: 9999px;
+  }
+  
+  main {
+    max-width: 80rem;
+    margin: 0 auto;
+    padding: 1rem;
+  }
+  
+  .content-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+  }
+  
+  h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: white;
+  }
+  
+  .button-group {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background-color: white;
+    border: none;
+    border-radius: 0.375rem;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #f9fafb;
+  }
+  
+  .upload-btn span, .upload-btn svg {
+    color: #3b82f6;
+  }
+  
+  .study-btn span, .study-btn svg {
+    color: #22c55e;
+  }
+
+  /* Add these styles to Homepage.css */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .modal {
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 400px;
+  }
+  
+  .modal h2 {
+    color: black;
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+  
+  .form-group {
+    margin-bottom: 1rem;
+  }
+  
+  .form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #4b5563;
+  }
+  
+  .form-group input,
+  .form-group select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.375rem;
+    background-color: #f9fafb;
+  }
+  
+  .modal .button-group {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  .modal button {
+    font-size: 0.875rem;
+  }
+  
+  .modal button[type="submit"] {
+    background-color: #fbbf24;
+    color: black;
+  }
+  
+  .modal button[type="button"] {
+    background-color: white;
+    border: 1px solid #e5e7eb;
+    margin-right: 0.5rem;
+  }
+
+  /* Add to existing Homepage.css */
+.classes-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+  
+  .class-card {
+    background: white;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+  }
+  
+  .class-card h3 {
+    color: black;
+    margin-bottom: 0.5rem;
+  }
+  
+  .class-card p {
+    color: #666;
+  }
+  
+  .lesson-view {
+    color: white;
+  }
+  
+  .lesson-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  
+  .back-btn {
+    background: none;
+    color: white;
+    padding: 0;
+  }
+  
+  .rating {
+    color: #fbbf24;
+  }
+  
+  .lesson-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-width: 600px;
+  }
+  
+  .section-btn {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 1rem;
+    color: white;
+    width: 100%;
+    border-radius: 0.5rem;
+  }
+  
+  .section-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  /* Homepage.css */
+.teacher-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+  }
+  
+  .teacher-header h1 {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .stars {
+    color: #fbbf24;
+  }
+  
+  .lessons-list {
+    background: white;
+    border-radius: 8px;
+    padding: 1rem;
+  }
+  
+  .lesson-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+  }
+  
+  .lesson-info {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+  
+  .lesson-info h3 {
+    color: black;
+    margin: 0;
+  }
+  
+  .status {
+    color: #ef4444;
+  }
+  
+  .more-options {
+    background: none;
+    border: none;
+    color: #6b7280;
+    padding: 0.5rem;
+  }
+  
+  .categories {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .category-btn {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+  }
+  
+  .play-btn {
+    background: #22c55e;
+    color: white;
+  }
+  
+  .new-lesson-btn {
+    background: white;
+    color: black;
+  }
+  
+  .lesson-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  
+  .back-btn {
+    background: none;
+    border: none;
+    color: white;
+    padding: 0;
+    cursor: pointer;
+  }
+
+  .lesson-card {
+    cursor: pointer;
+  }
+
+  .lesson-view {
+    display: flex;
+    height: calc(100vh - 64px);
+  }
+  
+  .lesson-sidebar {
+    width: 250px;
+    padding: 20px;
+    color: white;
+  }
+  
+  .question-modal {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    width: 100%;
+    max-width: 600px;
+  }
+  
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .toggle-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .toggle-switch {
+    width: 40px;
+    height: 20px;
+    background: #0ea5e9;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+  
+  .question-types {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 20px;
+  }
+  
+  .type-btn {
+    text-align: left;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 4px;
+    border: 1px solid #e5e7eb;
+  }
+  
+  .type-btn:hover {
+    background: #f1f5f9;
+  }
+  
+  .sidebar-sections {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .cancel-btn, .next-btn {
+    padding: 8px 16px;
+    border-radius: 4px;
+  }
+  
+  .cancel-btn {
+    background: transparent;
+    color: #64748b;
+  }
+  
+  .next-btn {
+    background: #64748b;
+    color: white;
+  }
+
+  /* Add to your existing Homepage.css */
+.lesson-page {
+    display: flex;
+    height: calc(100vh - 64px);
+  }
+  
+  .left-panel {
+    width: 250px;
+    padding: 20px;
+    background-color: #0ea5e9;
+    color: white;
+  }
+  
+  .category-list {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .right-panel {
+    flex: 1;
+    padding: 20px;
+  }
+  
+  .control-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .toggle-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: white;
+  }
+  
+  .toggle-switch {
+    width: 50px;
+    height: 24px;
+    background: #0ea5e9;
+    border-radius: 12px;
+    cursor: pointer;
+  }
+  
+  .question-card {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+  }
+  
+  .question-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .question-options button {
+    text-align: left;
+    padding: 15px;
+    border: 1px solid #e5e7eb;
+    background: white;
+    border-radius: 4px;
+  }
+  
+  .cancel-btn, .next-btn {
+    padding: 8px 16px;
+    border-radius: 4px;
+    color: white;
+  }
+  
+  .cancel-btn {
+    background: transparent;
+    border: 1px solid white;
+  }
+  
+  .next-btn {
+    background: #64748b;
+  }
+
+  /* Add/update these styles in Homepage.css */
+.left-panel {
+    width: 250px;
+    padding: 20px;
+    background-color: #0ea5e9;
+    color: white;
+    border-right: 2px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  .category-btn {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    width: 100%;
+    cursor: pointer;
+    margin-bottom: 8px;
+  }
+  
+  .question-card {
+    background: white;
+    border-radius: 8px;
+    padding: 30px;
+    margin: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .question-options button {
+    text-align: left;
+    padding: 15px;
+    border: 1px solid #e5e7eb;
+    background: white;
+    border-radius: 4px;
+    transition: all 0.2s;
+  }
+  
+  .question-options button:hover {
+    background: #f8f9fa;
+    border-color: #0ea5e9;
+  }
+
+  .category-btn {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: #f8f9fa;
+    border: none;
+    border-radius: 8px;
+    color: #333;
+    width: 100%;
+    cursor: pointer;
+    margin-bottom: 8px;
+    transition: all 0.2s;
+  }
+  
+  .category-btn:hover {
+    background: #e9ecef;
+  }
+  
+  .category-btn.active {
+    background: #0ea5e9;
+    color: white;
+  }
+  
+  /* Update left panel background */
+  .left-panel {
+    width: 250px;
+    padding: 20px;
+    background-color: white;
+    color: #333;
+    border-right: 2px solid #e5e7eb;
+  }
+  
+  /* Update back button and stars for dark text */
+  .left-panel .back-btn {
+    color: #333;
+  }
+  
+  .left-panel .stars {
+    color: #fbbf24;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 2rem;
+    color: #666;
+  }
+  
+  .card-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  .edit-btn, .delete-btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+  }
+  
+  .delete-btn {
+    background: #ef4444;
+    color: white;
+  }
+  
+  .edit-btn {
+    background: #3b82f6;
+    color: white;
+  }
+
+  .new-lesson-btn {
+    width: 100%;
+    margin: 1rem 0;
+    padding: 0.75rem;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border-radius: 0.375rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+  
+  .lessons-list {
+    margin-bottom: 1rem;
+  }
+  
+  .lesson-item {
+    padding: 0.75rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 0.375rem;
+    margin-bottom: 0.5rem;
+    color: white;
+    cursor: pointer;
+  }
+
+  .lessons-section {
+    margin: 1rem 0;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+  }
+  
+  .lessons-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+  
+  .lessons-header h3 {
+    color: white;
+    margin: 0;
+  }
+  
+  .create-lesson-btn {
+    padding: 0.5rem 1rem;
+    background: white;
+    color: #0ea5e9;
+    border-radius: 4px;
+    font-weight: 500;
+  }
+  
+ 
+  
+  .lesson-item.active {
+    background: skyblue;
+  }
+  
+  .empty-lessons {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.6);
+    padding: 1rem;
+  }
+  
+  .no-lesson-selected {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    color: #666;
+  }
+  
+  .category-list {
+    margin-top: 1rem;
+  }
+
+  .lesson-item {
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
+  background: white;
+  border-radius: 4px;
+  cursor: pointer;
+  color: black;
+}
+
+.lesson-item .lesson-card {
+  background: green;
+  padding: 1rem;
+  border-radius: 0.375rem;
+  color: #333;
+}
+
+.lesson-item.active .lesson-card {
+  background: #0ea5e9;
+  color: green;
+}
