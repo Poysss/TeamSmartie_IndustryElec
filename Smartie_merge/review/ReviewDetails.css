@@ -1,0 +1,296 @@
+.review-details-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem;
+    padding-top: 80px;
+  }
+  
+  .details-header {
+    margin-bottom: 2rem;
+  }
+  
+  .back-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: none;
+    border: none;
+    color: var(--accent);
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 0.5rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    margin-bottom: 1rem;
+  }
+  
+  .back-btn:hover {
+    background: rgba(255, 196, 54, 0.1);
+  }
+  
+  .header-content {
+    animation: slideDown 0.5s ease-out;
+  }
+  
+  .header-content h1 {
+    color: white;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+  
+  .header-badges {
+    display: flex;
+    gap: 1rem;
+  }
+  
+  .category-badge,
+  .date-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+  }
+  
+  .category-badge {
+    background: var(--primary-light);
+    color: white;
+  }
+  
+  .date-badge {
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.8);
+  }
+  
+  .review-content-wrapper {
+    display: grid;
+    gap: 2rem;
+  }
+  
+  .review-main-content {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 2rem;
+    animation: fadeIn 0.5s ease-out;
+  }
+  
+  .answer-comparison {
+    display: grid;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .answer-panel {
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  
+  .panel-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+  }
+  
+  .answer-panel.incorrect .panel-header {
+    background: rgba(255, 82, 82, 0.1);
+  }
+  
+  .answer-panel.correct .panel-header {
+    background: rgba(76, 175, 80, 0.1);
+  }
+  
+  .panel-header h3 {
+    color: white;
+    margin: 0;
+  }
+  
+  .panel-content {
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.05);
+  }
+  
+  .panel-content p {
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1.6;
+  }
+  
+  .explanation-btn {
+    background: none;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 1rem;
+    transition: all 0.3s ease;
+  }
+  
+  .explanation-btn:hover {
+    background: rgba(255, 196, 54, 0.1);
+  }
+  
+  .explanation-content {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    animation: slideDown 0.3s ease-out;
+  }
+  
+  .explanation-content ul {
+    margin-top: 0.5rem;
+    padding-left: 1.5rem;
+    color: rgba(255, 255, 255, 0.8);
+  }
+  
+  .explanation-content li {
+    margin-bottom: 0.5rem;
+  }
+  
+  .related-concepts {
+    margin-bottom: 2rem;
+  }
+  
+  .related-concepts h3 {
+    color: white;
+    margin-bottom: 1rem;
+  }
+  
+  .concept-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  
+  .concept-tag {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+  }
+  
+  .concept-tag:hover {
+    background: var(--primary-light);
+    transform: translateY(-2px);
+  }
+  
+  .study-recommendations h3 {
+    color: white;
+    margin-bottom: 1rem;
+  }
+  
+  .recommendation-cards {
+    display: grid;
+    gap: 1rem;
+  }
+  
+  .recommendation-card {
+    display: flex;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+  }
+  
+  .recommendation-card:hover {
+    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.08);
+  }
+  
+  .recommendation-card svg {
+    color: var(--accent);
+  }
+  
+  .recommendation-content h4 {
+    color: white;
+    margin-bottom: 0.5rem;
+  }
+  
+  .recommendation-content p {
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 1rem;
+  }
+  
+  .review-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+  
+  .action-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+  
+  .action-btn.retry {
+    background: var(--accent);
+    color: var(--primary-dark);
+  }
+  
+  .action-btn.bookmark {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+  }
+  
+  .action-btn:hover {
+    transform: translateY(-2px);
+  }
+  
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  .review-details-loading,
+  .review-details-error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+    text-align: center;
+    color: white;
+  }
+  
+  .review-details-error svg {
+    color: #FF5252;
+    margin-bottom: 1rem;
+  }
+  
+  .review-details-error h2 {
+    margin-bottom: 0.5rem;
+  }
+  
+  .review-details-error p {
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 1.5rem;
+  }
