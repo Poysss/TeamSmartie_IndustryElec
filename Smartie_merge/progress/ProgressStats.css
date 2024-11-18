@@ -1,0 +1,222 @@
+.progress-stats-container {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 2rem;
+  }
+  
+  .stats-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+  }
+  
+  .stats-header h2 {
+    color: white;
+    font-size: 1.5rem;
+  }
+  
+  .header-stats {
+    display: flex;
+    gap: 1.5rem;
+  }
+  
+  .header-stat {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--accent);
+  }
+  
+  .subject-stats {
+    margin-bottom: 2rem;
+  }
+  
+  .subject-stats h3 {
+    color: white;
+    margin-bottom: 1.5rem;
+    font-size: 1.2rem;
+  }
+  
+  .subject-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+  
+  .subject-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+  }
+  
+  .subject-card:hover {
+    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.08);
+  }
+  
+  .subject-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+  
+  .subject-header h4 {
+    color: white;
+    font-size: 1.1rem;
+  }
+  
+  .quiz-count {
+    color: var(--accent);
+    font-size: 0.9rem;
+  }
+  
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .stat {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .stat svg {
+    color: var(--accent);
+  }
+  
+  .stat .value {
+    display: block;
+    color: white;
+    font-weight: bold;
+  }
+  
+  .stat .label {
+    display: block;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.8rem;
+  }
+  
+  .progress-bar {
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    transition: width 0.3s ease;
+  }
+  
+  .achievement-section {
+    margin-bottom: 2rem;
+  }
+  
+  .achievement-section h3 {
+    color: white;
+    margin-bottom: 1.5rem;
+    font-size: 1.2rem;
+  }
+  
+  .achievement-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+  
+  .achievement-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 1.5rem;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+  }
+  
+  .achievement-card:hover {
+    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.08);
+  }
+  
+  .achievement-icon {
+    background: rgba(255, 196, 54, 0.1);
+    padding: 1rem;
+    border-radius: 8px;
+    color: var(--accent);
+  }
+  
+  .achievement-info h4 {
+    color: white;
+    margin-bottom: 0.5rem;
+  }
+  
+  .achievement-info p {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.9rem;
+  }
+  
+  .recommendations-section h3 {
+    color: white;
+    margin-bottom: 1.5rem;
+    font-size: 1.2rem;
+  }
+  
+  .recommendations-grid {
+    display: grid;
+    gap: 1rem;
+  }
+  
+  .recommendation-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 1.5rem;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+  }
+  
+  .recommendation-card:hover {
+    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.08);
+  }
+  
+  .recommendation-card svg {
+    color: var(--accent);
+  }
+  
+  .recommendation-content h4 {
+    color: white;
+    margin-bottom: 0.5rem;
+  }
+  
+  .recommendation-content p {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.9rem;
+  }
+  
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateX(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  @media (max-width: 1024px) {
+    .subject-grid,
+    .achievement-grid {
+      grid-template-columns: 1fr;
+    }
+  }
