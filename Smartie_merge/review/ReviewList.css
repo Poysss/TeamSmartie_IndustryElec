@@ -1,0 +1,237 @@
+.review-list-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    padding-top: 80px;
+  }
+  
+  .review-header {
+    margin-bottom: 2rem;
+  }
+  
+  .review-header h1 {
+    color: white;
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .filter-section {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  
+  .search-bar {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.75rem;
+    border-radius: 8px;
+    gap: 0.5rem;
+  }
+  
+  .search-bar input {
+    flex: 1;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1rem;
+  }
+  
+  .search-bar input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+  }
+  
+  .search-bar svg {
+    color: var(--accent);
+  }
+  
+  .filter-dropdown {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.75rem;
+    border-radius: 8px;
+    gap: 0.5rem;
+  }
+  
+  .filter-dropdown select {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1rem;
+    min-width: 150px;
+  }
+  
+  .filter-dropdown svg {
+    color: var(--accent);
+  }
+  
+  .reviews-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+  
+  .review-card {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    overflow: hidden;
+    animation: slideIn 0.5s ease-out forwards;
+    animation-delay: var(--delay);
+    opacity: 0;
+  }
+  
+  .review-card.correct {
+    border-left: 4px solid #4CAF50;
+  }
+  
+  .review-card.incorrect {
+    border-left: 4px solid #FF5252;
+  }
+  
+  .review-card.mixed {
+    border-left: 4px solid var(--accent);
+  }
+  
+  .review-card.pending {
+    border-left: 4px solid #808080;
+  }
+  
+  .review-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.05);
+  }
+  
+  .status-icon.correct {
+    color: #4CAF50;
+  }
+  
+  .status-icon.incorrect {
+    color: #FF5252;
+  }
+  
+  .status-icon.mixed {
+    color: var(--accent);
+  }
+  
+  .status-icon.pending {
+    color: #808080;
+  }
+  
+  .review-header h3 {
+    flex: 1;
+    color: white;
+    font-size: 1.2rem;
+  }
+  
+  .review-date {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.9rem;
+  }
+  
+  .review-content {
+    padding: 1.5rem;
+  }
+  
+  .category-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    color: var(--accent);
+    margin-bottom: 1rem;
+  }
+  
+  .answer-section {
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border-radius: 8px;
+  }
+  
+  .answer-section h4 {
+    color: white;
+    margin-bottom: 0.5rem;
+  }
+  
+  .answer-section p {
+    color: rgba(255, 255, 255, 0.8);
+  }
+  
+  .answer-section.incorrect {
+    background: rgba(255, 82, 82, 0.1);
+  }
+  
+  .answer-section.correct {
+    background: rgba(76, 175, 80, 0.1);
+  }
+  
+  .review-action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 1rem;
+    background: var(--accent);
+    color: var(--primary-dark);
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+  
+  .review-action-btn:hover {
+    background: #ffd166;
+  }
+  
+  .empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: rgba(255, 255, 255, 0.8);
+  }
+  
+  .empty-state svg {
+    color: var(--accent);
+    margin-bottom: 1rem;
+  }
+  
+  .empty-state h2 {
+    color: white;
+    margin-bottom: 0.5rem;
+  }
+  
+  .error-message {
+    background: rgba(255, 82, 82, 0.1);
+    color: #FF5252;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+  
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @media (max-width: 1024px) {
+    .reviews-grid {
+      grid-template-columns: 1fr;
+    }
+  }
