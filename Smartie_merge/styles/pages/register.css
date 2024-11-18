@@ -1,0 +1,151 @@
+.register-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    animation: fadeIn 0.5s ease-out;
+  }
+  
+  .register-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    padding: 2rem;
+    border-radius: 15px;
+    width: 100%;
+    max-width: 600px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    animation: slideUp 0.5s ease-out;
+  }
+  
+  .register-header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  
+  .register-icon {
+    color: var(--accent);
+    width: 48px;
+    height: 48px;
+    margin-bottom: 1rem;
+  }
+  
+  .register-header h2 {
+    color: white;
+    margin-bottom: 0.5rem;
+  }
+  
+  .register-header p {
+    color: rgba(255, 255, 255, 0.8);
+  }
+  
+  .register-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .form-row {
+    display: flex;
+    gap: 1rem;
+  }
+  
+  .form-group {
+    flex: 1;
+    position: relative;
+  }
+  
+  .form-group label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    color: white;
+  }
+  
+  .form-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    color: white;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+  }
+  
+  .form-group input:focus {
+    outline: none;
+    border-color: var(--accent);
+    background: rgba(255, 255, 255, 0.1);
+  }
+  
+  .register-button {
+    background: var(--accent);
+    color: var(--primary-dark);
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 1rem;
+  }
+  
+  .register-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 196, 54, 0.3);
+  }
+  
+  .register-button.loading {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+  
+  .error-message {
+    background: rgba(255, 0, 0, 0.1);
+    color: #ff6b6b;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+  
+  .register-footer {
+    text-align: center;
+    margin-top: 2rem;
+    color: rgba(255, 255, 255, 0.8);
+  }
+  
+  .login-link {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: bold;
+    margin-left: 0.5rem;
+    transition: all 0.3s ease;
+  }
+  
+  .login-link:hover {
+    text-decoration: underline;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  @keyframes slideUp {
+    from {
+      transform: translateY(20px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
