@@ -1,0 +1,225 @@
+.quiz-list-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    padding-top: 80px;
+  }
+  
+  .quiz-header {
+    margin-bottom: 3rem;
+  }
+  
+  .title-section {
+    margin-bottom: 2rem;
+  }
+  
+  .title-section h1 {
+    color: white;
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .title-section p {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1.2rem;
+  }
+  
+  .quiz-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+  
+  .stat-card {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 1.5rem;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: all 0.3s ease;
+  }
+  
+  .stat-card:hover {
+    transform: translateY(-5px);
+    background: rgba(255, 255, 255, 0.15);
+  }
+  
+  .stat-card svg {
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+  }
+  
+  .stat-value {
+    font-size: 2rem;
+    font-weight: bold;
+    color: white;
+    margin: 0.5rem 0;
+  }
+  
+  .stat-label {
+    color: rgba(255, 255, 255, 0.8);
+  }
+  
+  .available-quizzes {
+    margin-top: 3rem;
+  }
+  
+  .available-quizzes h2 {
+    color: white;
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .quiz-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+  
+  .quiz-card {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    animation: slideIn 0.5s ease-out forwards;
+    animation-delay: var(--delay);
+    opacity: 0;
+  }
+  
+  .quiz-card:hover {
+    transform: translateY(-5px);
+    background: rgba(255, 255, 255, 0.15);
+  }
+  
+  .quiz-info {
+    padding: 1.5rem;
+  }
+  
+  .quiz-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+  
+  .quiz-header h3 {
+    color: white;
+    font-size: 1.2rem;
+  }
+  
+  .difficulty-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.875rem;
+    color: white;
+  }
+  
+  .quiz-details {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .quiz-details span {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.9rem;
+  }
+  
+  .previous-score {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--accent);
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+  }
+  
+  .start-quiz-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: var(--accent);
+    color: var(--primary-dark);
+    text-decoration: none;
+    padding: 1rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+  
+  .start-quiz-btn:hover {
+    background: #ffd166;
+  }
+  
+  .empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: rgba(255, 255, 255, 0.8);
+  }
+  
+  .empty-state svg {
+    color: var(--accent);
+    margin-bottom: 1rem;
+  }
+  
+  .empty-state h2 {
+    color: white;
+    margin-bottom: 0.5rem;
+  }
+  
+  .empty-state p {
+    margin-bottom: 2rem;
+  }
+  
+  .create-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--accent);
+    color: var(--primary-dark);
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+  
+  .create-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 196, 54, 0.3);
+  }
+  
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .quiz-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 50vh;
+    color: white;
+    font-size: 1.2rem;
+  }
+  
+  .error-message {
+    background: rgba(255, 82, 82, 0.1);
+    color: #FF5252;
+    padding: 1rem;
+    border-radius: 8px;
+    margin: 2rem 0;
+    text-align: center;
+  }
