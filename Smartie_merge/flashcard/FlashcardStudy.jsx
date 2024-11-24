@@ -35,28 +35,25 @@ const FlashcardStudy = () => {
   const loadFlashcard = async () => {
     try {
       setLoading(true);
+      setError('');
       
       // Get flashcard with contents
       const flashcardData = await flashcardService.getFlashcardById(id);
-      const contentsData = await flashcardService.getFlashcardContentsById(id);
-      
-      console.log('Loaded flashcard:', flashcardData);
-      console.log('Loaded contents:', contentsData);
-
       if (!flashcardData) {
         throw new Error('Flashcard not found');
       }
 
+      const contentsData = await flashcardService.getFlashcardContentsById(id);
       if (!contentsData || contentsData.length === 0) {
         throw new Error('No content found for this flashcard');
       }
 
       setFlashcard(flashcardData);
-      setContents(contentsData.sort((a, b) => a.numberOfQuestion - b.numberOfQuestion));
-      setLoading(false);
+      setContents(contentsData);
     } catch (err) {
       console.error('Error loading flashcard:', err);
       setError(err.message || 'Failed to load flashcard');
+    } finally {
       setLoading(false);
     }
   };

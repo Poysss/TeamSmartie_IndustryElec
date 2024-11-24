@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams, Link } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { 
   Plus, 
   Minus, 
@@ -38,25 +38,22 @@ const FlashcardForm = () => {
   const loadFlashcard = async () => {
     try {
       setLoading(true);
+      setError('');
       const flashcard = await flashcardService.getFlashcardById(id);
       const contents = await flashcardService.getFlashcardContentsById(id);
       
-      console.log('Loaded flashcard:', flashcard);
-      console.log('Loaded contents:', contents);
-
       if (flashcard) {
         setFormData({
-          subject: flashcard.subject,
-          category: flashcard.category,
+          subject: flashcard.subject || '',
+          category: flashcard.category || '',
           contents: contents.length > 0 
-            ? contents.sort((a, b) => a.numberOfQuestion - b.numberOfQuestion)
-                .map(content => ({
-                  contentId: content.contentId,
-                  question: content.question,
-                  answer: content.answer,
-                  numberOfQuestion: content.numberOfQuestion,
-                  flashCardId: content.flashCard.flashCardId
-                }))
+            ? contents.map(content => ({
+                contentId: content.contentId,
+                question: content.question || '',
+                answer: content.answer || '',
+                numberOfQuestion: content.numberOfQuestion,
+                flashCardId: content.flashCard?.flashCardId
+              }))
             : [{
                 question: '',
                 answer: '',
@@ -109,7 +106,8 @@ const FlashcardForm = () => {
 
   const removeContent = (index) => {
     if (formData.contents.length > 1) {
-      const newContents = formData.contents.filter((_, i) => i !== index)
+      const newContents = formData.contents
+        .filter((_, i) => i !== index)
         .map((content, i) => ({
           ...content,
           numberOfQuestion: i + 1
@@ -133,14 +131,14 @@ const FlashcardForm = () => {
       }
 
       const flashcardData = {
-        subject: formData.subject,
-        category: formData.category,
+        subject: formData.subject.trim(),
+        category: formData.category.trim(),
         student: { studentId: userData.studentId }
       };
 
       if (id) {
         // Update existing flashcard
-        flashcardData.flashCardId = id;
+        flashcardData.flashCardId = parseInt(id);
         await flashcardService.updateFlashcard(flashcardData);
         
         // Handle content updates
@@ -149,7 +147,7 @@ const FlashcardForm = () => {
             // Update existing content
             await flashcardService.updateFlashcardContent({
               contentId: content.contentId,
-              flashCard: { flashCardId: id },
+              flashCard: { flashCardId: parseInt(id) },
               numberOfQuestion: content.numberOfQuestion,
               question: content.question,
               answer: content.answer
@@ -157,7 +155,7 @@ const FlashcardForm = () => {
           } else {
             // Create new content
             await flashcardService.createFlashcardContent({
-              flashCard: { flashCardId: id },
+              flashCard: { flashCardId: parseInt(id) },
               numberOfQuestion: content.numberOfQuestion,
               question: content.question,
               answer: content.answer
@@ -179,7 +177,6 @@ const FlashcardForm = () => {
         for (const content of deletedContents) {
           await flashcardService.deleteFlashcardContent(content.contentId);
         }
-
       } else {
         // Create new flashcard with contents
         await flashcardService.createFlashcardWithContents(flashcardData, formData.contents);

@@ -3,80 +3,68 @@ import { Link } from 'react-router-dom';
 import { 
   BookOpen, 
   Brain, 
-  Trophy, 
-  Clock, 
-  BarChart2, 
-  CheckCircle 
+  CheckCircle, 
+  BarChart2,
+  Plus
 } from 'lucide-react';
 import '../styles/pages/home.css';
 
 const Home = () => {
-  const features = [
+  const user = JSON.parse(localStorage.getItem('user'));
+
+  const quickActions = [
     {
-      icon: <BookOpen size={32} />,
-      title: 'Create Flashcards',
-      description: 'Create and organize your study materials by subject and category'
+      icon: <BookOpen size={24} />,
+      title: 'Study Flashcards',
+      description: 'Review your study materials',
+      link: '/flashcards'
     },
     {
-      icon: <Brain size={32} />,
-      title: 'Quiz Mode',
-      description: 'Test your knowledge with different types of quizzes'
+      icon: <Brain size={24} />,
+      title: 'Take a Quiz',
+      description: 'Test your knowledge',
+      link: '/quiz'
     },
     {
-      icon: <Trophy size={32} />,
+      icon: <CheckCircle size={24} />,
+      title: 'Review',
+      description: 'Check your answers',
+      link: '/reviews'
+    },
+    {
+      icon: <BarChart2 size={24} />,
       title: 'Track Progress',
-      description: 'Monitor your performance and see your improvement over time'
+      description: 'Monitor your learning journey',
+      link: '/progress'
     },
     {
-      icon: <Clock size={32} />,
-      title: 'Study Timer',
-      description: 'Manage your study sessions effectively'
-    },
-    {
-      icon: <BarChart2 size={32} />,
-      title: 'Analytics',
-      description: 'Get detailed insights into your learning progress'
-    },
-    {
-      icon: <CheckCircle size={32} />,
-      title: 'Review System',
-      description: 'Review and reinforce your knowledge systematically'
+      icon: <Plus size={24} />,
+      title: 'Create New Deck',
+      description: 'Add a new flashcard deck',
+      link: '/flashcards/create'
     }
   ];
 
   return (
     <div className="home-container">
-      <section className="hero-section">
-        <div className="hero-content">
-          <h1 className="slide-up">Welcome to Smartie</h1>
-          <p className="fade-in">Your personalized learning companion for effective studying</p>
-          <div className="hero-buttons">
-            <Link to="/register" className="btn-primary">Get Started</Link>
-            <Link to="/login" className="btn-secondary">Login</Link>
-          </div>
+      <div className="home-header">
+        <div className="welcome-section">
+          <h1>Welcome, {user?.firstName || 'Student'}!</h1>
+          <p>Let's continue your learning journey</p>
         </div>
-      </section>
+      </div>
 
-      <section className="features-section">
-        <h2>Why Choose Smartie?</h2>
-        <div className="features-grid">
-          {features.map((feature, index) => (
-            <div className="feature-card" key={index}>
-              <div className="feature-icon">{feature.icon}</div>
-              <h3>{feature.title}</h3>
-              <p>{feature.description}</p>
-            </div>
+      <div className="actions-section">
+        <div className="actions-grid">
+          {quickActions.map((action, index) => (
+            <Link to={action.link} key={index} className="action-card">
+              <div className="action-icon">{action.icon}</div>
+              <h3>{action.title}</h3>
+              <p>{action.description}</p>
+            </Link>
           ))}
         </div>
-      </section>
-
-      <section className="cta-section">
-        <div className="cta-content">
-          <h2>Ready to Start Learning?</h2>
-          <p>Join thousands of students improving their study habits with Smartie</p>
-          <Link to="/register" className="btn-primary">Create Free Account</Link>
-        </div>
-      </section>
+      </div>
     </div>
   );
 };

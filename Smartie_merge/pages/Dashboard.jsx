@@ -2,11 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { 
   Book, 
-  Brain,
+  Brain, 
   Clock, 
   BarChart2,
   Plus,
-  Layout,
   CheckCircle,
   Star,
   Loader
@@ -17,7 +16,7 @@ import reviewService from '../services/review.service';
 import '../styles/pages/dashboard.css';
 
 const Dashboard = () => {
-  const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')));
+  const [user] = useState(JSON.parse(localStorage.getItem('user')));
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [dashboardData, setDashboardData] = useState({
@@ -40,32 +39,27 @@ const Dashboard = () => {
   const loadDashboardData = async () => {
     try {
       setLoading(true);
+      setError('');
       
-      // Fetch all data in parallel
+      // Get user-specific data
       const [flashcards, quizzes, reviews] = await Promise.all([
         flashcardService.getFlashcardByStudentId(user.studentId),
-        quizService.getAllQuizzes(),
+        quizService.getQuizzesByStudent(user.studentId),
         reviewService.getAllReviews()
       ]);
 
-      // Filter data for current user
-      const userFlashcards = flashcards.filter(f => f.student?.studentId === user.studentId);
-      const userQuizzes = quizzes.filter(q => q.flashCard?.student?.studentId === user.studentId);
-      const userReviews = reviews.filter(r => r.flashCard?.student?.studentId === user.studentId);
+      // Filter reviews for current user's flashcards
+      const userFlashcardIds = flashcards.map(f => f.flashCardId);
+      const userReviews = reviews.filter(r => 
+        userFlashcardIds.includes(r.flashCard?.flashCardId)
+      );
 
       // Calculate statistics
-      const stats = calculateStats(userFlashcards, userQuizzes, userReviews);
+      const stats = calculateStats(flashcards, quizzes, userReviews);
 
       setDashboardData({
-        flashcards: userFlashcards,
-        quizzes: userQuizzes,
-        reviews: userReviews,
-        stats
-      });
-
-      console.log('Dashboard data loaded:', {
-        flashcards: userFlashcards,
-        quizzes: userQuizzes,
+        flashcards,
+        quizzes,
         reviews: userReviews,
         stats
       });
@@ -85,8 +79,10 @@ const Dashboard = () => {
       ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length)
       : 0;
 
-    // Calculate total study time (implementation depends on your data structure)
-    const totalTime = 0; // Replace with actual calculation based on your data
+    // Calculate total study time
+    const totalTime = quizzes.reduce((sum, quiz) => {
+      return sum + (quiz.timeSpent || 0);
+    }, 0);
 
     // Get recent activity
     const recentActivity = [
@@ -101,7 +97,9 @@ const Dashboard = () => {
         date: new Date(r.createdAt || Date.now()),
         subject: r.flashCard?.subject
       }))
-    ].sort((a, b) => b.date - a.date).slice(0, 5);
+    ]
+    .sort((a, b) => b.date - a.date)
+    .slice(0, 5);
 
     return {
       totalFlashcards: flashcards.length,
@@ -115,7 +113,7 @@ const Dashboard = () => {
   if (loading) {
     return (
       <div className="dashboard-loading">
-        <Loader className="animate-spin" />
+        <Loader className="animate-spin" size={24} />
         <span>Loading dashboard...</span>
       </div>
     );
@@ -147,43 +145,13 @@ const Dashboard = () => {
           </div>
           <div className="stat-card">
             <Clock size={24} />
-            <span className="stat-value">{dashboardData.stats.studyTime}h</span>
+            <span className="stat-value">{Math.round(dashboardData.stats.studyTime / 60)}h</span>
             <span className="stat-label">Study Time</span>
           </div>
         </div>
       </div>
 
       <div className="dashboard-content">
-        <div className="content-section">
-          <h2>Quick Actions</h2>
-          <div className="menu-grid">
-            <Link to="/flashcards" className="menu-card">
-              <div className="menu-icon">
-                <Book size={24} />
-              </div>
-              <span className="menu-title">Flashcards</span>
-            </Link>
-            <Link to="/quiz" className="menu-card">
-              <div className="menu-icon">
-                <Brain size={24} />
-              </div>
-              <span className="menu-title">Quiz Mode</span>
-            </Link>
-            <Link to="/reviews" className="menu-card">
-              <div className="menu-icon">
-                <CheckCircle size={24} />
-              </div>
-              <span className="menu-title">Review</span>
-            </Link>
-            <Link to="/progress" className="menu-card">
-              <div className="menu-icon">
-                <BarChart2 size={24} />
-              </div>
-              <span className="menu-title">Progress</span>
-            </Link>
-          </div>
-        </div>
-
         <div className="content-section">
           <div className="section-header">
             <h2>Recent Flashcard Decks</h2>
@@ -205,9 +173,11 @@ const Dashboard = () => {
                   <Link to={`/flashcards/study/${deck.flashCardId}`} className="btn-study">
                     Study Now
                   </Link>
-                  <Link to={`/quiz/start/${deck.flashCardId}`} className="btn-quiz">
-                    Quiz
-                  </Link>
+                  {deck.contents?.length > 0 && (
+                    <Link to={`/quiz/setup/${deck.flashCardId}`} className="btn-quiz">
+                      Quiz
+                    </Link>
+                  )}
                 </div>
               </div>
             ))}

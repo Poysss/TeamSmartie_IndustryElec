@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/layout/Navbar';
+import Landing from './pages/Landing';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -49,14 +50,13 @@ const ProtectedRoute = ({ children }) => {
 
 const PublicRoute = ({ children }) => {
   const isAuthenticated = authService.isAuthenticated();
-  return !isAuthenticated ? children : <Navigate to="/dashboard" />;
+  return !isAuthenticated ? children : <Navigate to="/home" />;
 };
 
 const App = () => {
   const [initialLoading, setInitialLoading] = useState(true);
 
   useEffect(() => {
-    // Simulate initial load time for smooth transitions
     const timer = setTimeout(() => {
       setInitialLoading(false);
     }, 1000);
@@ -82,6 +82,14 @@ const App = () => {
         <main className="main-content">
           <Routes>
             {/* Public Routes */}
+            <Route 
+              path="/" 
+              element={
+                <PublicRoute>
+                  <Landing />
+                </PublicRoute>
+              } 
+            />
             <Route
               path="/login"
               element={
@@ -101,7 +109,7 @@ const App = () => {
 
             {/* Protected Routes */}
             <Route
-              path="/"
+              path="/home"
               element={
                 <ProtectedRoute>
                   <Home />

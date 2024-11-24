@@ -1,6 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { LogIn, User, Lock } from 'lucide-react';
+import { 
+  LogIn, 
+  User, 
+  Lock,
+  Eye,
+  EyeOff,
+  AlertTriangle,
+  Loader
+} from 'lucide-react';
 import authService from '../services/auth.service';
 import '../styles/pages/login.css';
 
@@ -12,44 +20,36 @@ const Login = () => {
   });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-
-  // Check if user is already logged in
-  useEffect(() => {
-    const user = authService.getCurrentUser();
-    if (user) {
-      navigate('/dashboard');
-    }
-  }, [navigate]);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
     if (error) setError('');
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
-    setError('');
-
+    
+    if (!formData.username || !formData.password) {
+      setError('Please fill in all fields');
+      return;
+    }
+  
     try {
-      console.log('Attempting login with:', formData.username); // Debug log
-
-      const user = await authService.login(formData.username, formData.password);
-      console.log('Login response:', user); // Debug log
-
-      if (user) {
-        localStorage.setItem('user', JSON.stringify(user));
-        console.log('User stored in localStorage'); // Debug log
-        navigate('/dashboard', { replace: true });
-        window.location.reload(); // Force reload to update navigation state
-      } else {
-        setError('Invalid username or password');
-      }
+      setIsLoading(true);
+      setError('');
+      
+      await authService.login(formData.username, formData.password);
+      navigate('/home'); // Changed from '/' to '/home'
     } catch (err) {
-      console.error('Login error:', err);
       setError('Invalid username or password');
     } finally {
       setIsLoading(false);
@@ -67,7 +67,8 @@ const Login = () => {
 
         {error && (
           <div className="error-message">
-            {error}
+            <AlertTriangle size={18} />
+            <span>{error}</span>
           </div>
         )}
 
@@ -85,23 +86,35 @@ const Login = () => {
               onChange={handleChange}
               placeholder="Enter your username"
               required
+              autoComplete="username"
             />
           </div>
 
-          <div className="form-group">
+          <div className="form-group password-group">
             <label htmlFor="password">
               <Lock size={18} />
               Password
             </label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="Enter your password"
-              required
-            />
+            <div className="password-input-container">
+              <input
+                type={showPassword ? "text" : "password"}
+                id="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="Enter your password"
+                required
+                autoComplete="current-password"
+              />
+              <button
+                type="button"
+                className="toggle-password-btn"
+                onClick={togglePasswordVisibility}
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
           </div>
 
           <button 
@@ -109,7 +122,17 @@ const Login = () => {
             className={`login-button ${isLoading ? 'loading' : ''}`}
             disabled={isLoading}
           >
-            {isLoading ? 'Logging in...' : 'Login'}
+            {isLoading ? (
+              <>
+                <Loader className="animate-spin" size={18} />
+                <span>Logging in...</span>
+              </>
+            ) : (
+              <>
+                <LogIn size={18} />
+                <span>Login</span>
+              </>
+            )}
           </button>
         </form>
 

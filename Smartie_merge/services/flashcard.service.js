@@ -3,11 +3,9 @@ import axios from 'axios';
 const API_URL = 'http://localhost:8080';
 
 export const flashcardService = {
-  // Flashcard operations
   async getAllFlashcards() {
     try {
       const response = await axios.get(`${API_URL}/flashcard/get`);
-      console.log('Fetched flashcards:', response.data);
       return response.data;
     } catch (error) {
       console.error('Error fetching flashcards:', error);
@@ -17,70 +15,63 @@ export const flashcardService = {
 
   async getFlashcardById(id) {
     try {
-      const flashcards = await this.getAllFlashcards();
-      const flashcard = flashcards.find(card => card.flashCardId.toString() === id.toString());
-      if (flashcard) {
-        // Get the contents for this flashcard
-        const contents = await this.getFlashcardContents();
-        flashcard.contents = contents.filter(content => 
-          content.flashCard && content.flashCard.flashCardId === flashcard.flashCardId
-        );
+      if (!id) {
+        throw new Error('Flashcard ID is required');
       }
-      console.log('Fetched flashcard by ID:', flashcard);
-      return flashcard;
+
+      const flashcards = await this.getAllFlashcards();
+      const flashcard = flashcards.find(
+        card => card.flashCardId.toString() === id.toString()
+      );
+
+      if (!flashcard) {
+        throw new Error('Flashcard not found');
+      }
+
+      // Get contents for this flashcard
+      const contents = await this.getFlashcardContentsById(flashcard.flashCardId);
+      return {
+        ...flashcard,
+        contents
+      };
     } catch (error) {
       console.error('Error fetching flashcard by ID:', error);
       throw error;
     }
   },
 
-  async createFlashcard(flashcardData) {
+  async getFlashcardByStudentId(studentId) {
     try {
-      const response = await axios.post(`${API_URL}/flashcard/add`, {
-        subject: flashcardData.subject,
-        category: flashcardData.category,
-        student: flashcardData.student
-      });
-      console.log('Created flashcard:', response.data);
-      return response.data;
+      if (!studentId) {
+        throw new Error('Student ID is required');
+      }
+
+      const allFlashcards = await this.getAllFlashcards();
+      const studentFlashcards = allFlashcards.filter(
+        flashcard => flashcard.student?.studentId === studentId
+      );
+      
+      // Get contents for each flashcard
+      const flashcardsWithContents = await Promise.all(
+        studentFlashcards.map(async (flashcard) => {
+          const contents = await this.getFlashcardContentsById(flashcard.flashCardId);
+          return {
+            ...flashcard,
+            contents: contents || []
+          };
+        })
+      );
+
+      return flashcardsWithContents;
     } catch (error) {
-      console.error('Error creating flashcard:', error);
+      console.error('Error fetching student flashcards:', error);
       throw error;
     }
   },
 
-  async updateFlashcard(flashcardData) {
-    try {
-      const response = await axios.put(`${API_URL}/flashcard/update`, {
-        flashCardId: flashcardData.flashCardId,
-        subject: flashcardData.subject,
-        category: flashcardData.category,
-        student: flashcardData.student
-      });
-      console.log('Updated flashcard:', response.data);
-      return response.data;
-    } catch (error) {
-      console.error('Error updating flashcard:', error);
-      throw error;
-    }
-  },
-
-  async deleteFlashcard(flashcardId) {
-    try {
-      const response = await axios.delete(`${API_URL}/flashcard/delete/${flashcardId}`);
-      console.log('Deleted flashcard:', flashcardId);
-      return response.data;
-    } catch (error) {
-      console.error('Error deleting flashcard:', error);
-      throw error;
-    }
-  },
-
-  // Flashcard content operations
   async getFlashcardContents() {
     try {
       const response = await axios.get(`${API_URL}/content/get`);
-      console.log('Fetched contents:', response.data);
       return response.data;
     } catch (error) {
       console.error('Error fetching contents:', error);
@@ -88,15 +79,56 @@ export const flashcardService = {
     }
   },
 
+  async getFlashcardContentsById(flashcardId) {
+    try {
+      if (!flashcardId) {
+        throw new Error('Flashcard ID is required');
+      }
+
+      const contents = await this.getFlashcardContents();
+      return contents
+        .filter(content => 
+          content.flashCard?.flashCardId.toString() === flashcardId.toString()
+        )
+        .sort((a, b) => a.numberOfQuestion - b.numberOfQuestion);
+    } catch (error) {
+      console.error('Error fetching flashcard contents:', error);
+      throw error;
+    }
+  },
+
+  async createFlashcard(flashcardData) {
+    try {
+      if (!flashcardData.student?.studentId) {
+        throw new Error('Student ID is required');
+      }
+
+      const response = await axios.post(`${API_URL}/flashcard/add`, {
+        subject: flashcardData.subject,
+        category: flashcardData.category,
+        student: { studentId: flashcardData.student.studentId }
+      });
+
+      return response.data;
+    } catch (error) {
+      console.error('Error creating flashcard:', error);
+      throw error;
+    }
+  },
+
   async createFlashcardContent(contentData) {
     try {
+      if (!contentData.flashCard?.flashCardId) {
+        throw new Error('Flashcard ID is required');
+      }
+
       const response = await axios.post(`${API_URL}/content/add`, {
-        flashCard: { flashCardId: contentData.flashCardId },
-        numberOfQuestion: contentData.numberOfQuestion,
+        flashCard: { flashCardId: contentData.flashCard.flashCardId },
+        numberOfQuestion: contentData.numberOfQuestion || 1,
         question: contentData.question,
         answer: contentData.answer
       });
-      console.log('Created content:', response.data);
+
       return response.data;
     } catch (error) {
       console.error('Error creating content:', error);
@@ -104,57 +136,23 @@ export const flashcardService = {
     }
   },
 
-  async updateFlashcardContent(contentData) {
-    try {
-      const response = await axios.put(`${API_URL}/content/update`, {
-        contentId: contentData.contentId,
-        flashCard: contentData.flashCard,
-        numberOfQuestion: contentData.numberOfQuestion,
-        question: contentData.question,
-        answer: contentData.answer
-      });
-      console.log('Updated content:', response.data);
-      return response.data;
-    } catch (error) {
-      console.error('Error updating content:', error);
-      throw error;
-    }
-  },
-
-  async deleteFlashcardContent(contentId) {
-    try {
-      const response = await axios.delete(`${API_URL}/content/delete/${contentId}`);
-      console.log('Deleted content:', contentId);
-      return response.data;
-    } catch (error) {
-      console.error('Error deleting content:', error);
-      throw error;
-    }
-  },
-
-  // Combined operations
   async createFlashcardWithContents(flashcardData, contents) {
     try {
-      console.log('Creating flashcard with contents:', { flashcardData, contents });
-      
       // First create the flashcard
       const flashcard = await this.createFlashcard(flashcardData);
-      console.log('Created flashcard:', flashcard);
 
       // Then create each content item
-      const contentPromises = contents.map(content =>
+      const contentPromises = contents.map((content, index) =>
         this.createFlashcardContent({
-          flashCardId: flashcard.flashCardId,
-          numberOfQuestion: content.numberOfQuestion,
+          flashCard: { flashCardId: flashcard.flashCardId },
+          numberOfQuestion: index + 1,
           question: content.question,
           answer: content.answer
         })
       );
       
       const createdContents = await Promise.all(contentPromises);
-      console.log('Created contents:', createdContents);
 
-      // Return the flashcard with its contents
       return {
         ...flashcard,
         contents: createdContents
@@ -165,92 +163,78 @@ export const flashcardService = {
     }
   },
 
-  async getFlashcardByStudentId(studentId) {
+  async updateFlashcard(flashcardData) {
     try {
-      const allFlashcards = await this.getAllFlashcards();
-      const studentFlashcards = allFlashcards.filter(
-        flashcard => flashcard.student && flashcard.student.studentId === studentId
-      );
-      
-      // Get contents for each flashcard
-      const flashcardsWithContents = await Promise.all(
-        studentFlashcards.map(async (flashcard) => {
-          const contents = await this.getFlashcardContents();
-          return {
-            ...flashcard,
-            contents: contents.filter(
-              content => content.flashCard && content.flashCard.flashCardId === flashcard.flashCardId
-            )
-          };
-        })
-      );
+      if (!flashcardData.flashCardId) {
+        throw new Error('Flashcard ID is required');
+      }
 
-      console.log('Fetched student flashcards:', flashcardsWithContents);
-      return flashcardsWithContents;
+      const response = await axios.put(`${API_URL}/flashcard/update`, {
+        flashCardId: flashcardData.flashCardId,
+        subject: flashcardData.subject,
+        category: flashcardData.category,
+        student: flashcardData.student
+      });
+
+      return response.data;
     } catch (error) {
-      console.error('Error fetching student flashcards:', error);
+      console.error('Error updating flashcard:', error);
       throw error;
     }
   },
 
-  async getFlashcardContentsById(flashcardId) {
+  async updateFlashcardContent(contentData) {
     try {
-      const contents = await this.getFlashcardContents();
-      const flashcardContents = contents.filter(
-        content => content.flashCard && content.flashCard.flashCardId.toString() === flashcardId.toString()
-      );
-      console.log('Fetched flashcard contents:', flashcardContents);
-      return flashcardContents;
+      if (!contentData.contentId || !contentData.flashCard?.flashCardId) {
+        throw new Error('Content ID and Flashcard ID are required');
+      }
+
+      const response = await axios.put(`${API_URL}/content/update`, {
+        contentId: contentData.contentId,
+        flashCard: { flashCardId: contentData.flashCard.flashCardId },
+        numberOfQuestion: contentData.numberOfQuestion,
+        question: contentData.question,
+        answer: contentData.answer
+      });
+
+      return response.data;
     } catch (error) {
-      console.error('Error fetching flashcard contents:', error);
+      console.error('Error updating content:', error);
       throw error;
     }
   },
 
-  async updateFlashcardWithContents(flashcardId, flashcardData, contents) {
+  async deleteFlashcard(flashcardId) {
     try {
-      console.log('Updating flashcard with contents:', { flashcardId, flashcardData, contents });
+      if (!flashcardId) {
+        throw new Error('Flashcard ID is required');
+      }
 
-      // Update the flashcard
-      const updatedFlashcard = await this.updateFlashcard({
-        flashCardId: flashcardId,
-        ...flashcardData
-      });
+      // First, delete all contents associated with this flashcard
+      const contents = await this.getFlashcardContentsById(flashcardId);
+      await Promise.all(
+        contents.map(content => this.deleteFlashcardContent(content.contentId))
+      );
 
-      // Get existing contents
-      const existingContents = await this.getFlashcardContentsById(flashcardId);
-
-      // Update or create contents
-      const contentPromises = contents.map(async (content) => {
-        const existingContent = existingContents.find(
-          ec => ec.numberOfQuestion === content.numberOfQuestion
-        );
-
-        if (existingContent) {
-          // Update existing content
-          return this.updateFlashcardContent({
-            contentId: existingContent.contentId,
-            flashCard: { flashCardId: flashcardId },
-            ...content
-          });
-        } else {
-          // Create new content
-          return this.createFlashcardContent({
-            flashCardId: flashcardId,
-            ...content
-          });
-        }
-      });
-
-      const updatedContents = await Promise.all(contentPromises);
-      console.log('Updated contents:', updatedContents);
-
-      return {
-        ...updatedFlashcard,
-        contents: updatedContents
-      };
+      // Then delete the flashcard
+      const response = await axios.delete(`${API_URL}/flashcard/delete/${flashcardId}`);
+      return response.data;
     } catch (error) {
-      console.error('Error updating flashcard with contents:', error);
+      console.error('Error deleting flashcard:', error);
+      throw error;
+    }
+  },
+
+  async deleteFlashcardContent(contentId) {
+    try {
+      if (!contentId) {
+        throw new Error('Content ID is required');
+      }
+
+      const response = await axios.delete(`${API_URL}/content/delete/${contentId}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error deleting content:', error);
       throw error;
     }
   }
