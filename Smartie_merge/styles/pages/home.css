@@ -1,3 +1,5 @@
+/* src/styles/pages/home.css */
+
 .home-container {
   max-width: 1400px;
   margin: 0 auto;
@@ -9,15 +11,42 @@
 }
 
 .home-header {
-  margin-bottom: 2rem; /* Reduced from 4rem to 2rem */
-  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.welcome-section {
+  margin-bottom: 2rem;
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.profile-picture {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.profile-placeholder {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
 }
 
 .welcome-section h1 {
   font-size: 2.5rem;
   color: white;
-  margin-bottom: 0.5rem;
-  animation: slideDown 0.5s ease-out;
+  animation: slideUp 0.5s ease-out;
 }
 
 .welcome-section p {
@@ -28,9 +57,9 @@
 
 .actions-section {
   display: flex;
-  align-items: flex-start; /* Changed from center to flex-start */
+  align-items: flex-start;
   padding: 0 2rem;
-  margin-top: 2rem; /* Added margin-top */
+  margin-top: 2rem;
 }
 
 .actions-grid {
@@ -41,7 +70,6 @@
   animation: fadeIn 0.5s ease-out;
 }
 
-/* Rest of the CSS remains the same */
 .action-card {
   background: rgba(255, 255, 255, 0.1);
   padding: 2rem;
@@ -112,7 +140,6 @@
   }
 }
 
-/* Responsive adjustments */
 @media (max-width: 1200px) {
   .actions-grid {
     grid-template-columns: repeat(3, 1fr);
@@ -149,5 +176,16 @@
 
   .welcome-section h1 {
     font-size: 1.75rem;
+  }
+  
+  .user-profile {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .profile-picture,
+  .profile-placeholder {
+    width: 64px;
+    height: 64px;
   }
 }

@@ -6,6 +6,7 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
+import Profile from './pages/Profile';
 import FlashcardList from './components/flashcard/FlashcardList';
 import FlashcardForm from './components/flashcard/FlashcardForm';
 import FlashcardStudy from './components/flashcard/FlashcardStudy';
@@ -17,6 +18,7 @@ import ReviewList from './components/review/ReviewList';
 import ReviewDetails from './components/review/ReviewDetails';
 import ProgressChart from './components/progress/ProgressChart';
 import NotFound from './pages/NotFound';
+import Footer from './components/layout/Footer';
 import authService from './services/auth.service';
 import { Loader } from 'lucide-react';
 import './styles/main.css';
@@ -116,12 +118,19 @@ const App = () => {
                 </ProtectedRoute>
               }
             />
-
             <Route
               path="/dashboard"
               element={
                 <ProtectedRoute>
                   <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <Profile />
                 </ProtectedRoute>
               }
             />
@@ -226,6 +235,7 @@ const App = () => {
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>
+        <Footer />
       </div>
     </Router>
   );

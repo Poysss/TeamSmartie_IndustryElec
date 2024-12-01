@@ -1,3 +1,5 @@
+// src/services/auth.service.js
+
 import axios from 'axios';
 
 const API_URL = 'http://localhost:8080';
@@ -50,6 +52,36 @@ const authService = {
     }
   },
 
+  async updateProfile(userData) {
+    try {
+      const response = await axios.put(`${API_URL}/student/update`, {
+        studentId: userData.studentId,
+        firstName: userData.firstName,
+        lastName: userData.lastName,
+        studentEmail: userData.studentEmail,
+        studentUsername: userData.studentUsername,
+        studentPassword: userData.studentPassword
+      });
+
+      // Update local storage with new user data
+      if (response.data) {
+        const updatedUserData = {
+          ...response.data,
+          token: localStorage.getItem('token') // Preserve the existing token
+        };
+        localStorage.setItem('user', JSON.stringify(updatedUserData));
+      }
+
+      return response.data;
+    } catch (error) {
+      if (error.response && error.response.status === 400) {
+        throw new Error('Username or email already exists');
+      } else {
+        throw new Error('Failed to update profile. Please try again.');
+      }
+    }
+  },
+
   logout() {
     localStorage.removeItem('user');
     localStorage.removeItem('token');
@@ -63,6 +95,11 @@ const authService = {
 
   isAuthenticated() {
     return !!localStorage.getItem('token');
+  },
+
+  getAuthHeader() {
+    const token = localStorage.getItem('token');
+    return token ? { Authorization: `Bearer ${token}` } : {};
   }
 };
 

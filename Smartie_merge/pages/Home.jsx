@@ -1,3 +1,5 @@
+// src/pages/Home.jsx
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { 
@@ -5,7 +7,8 @@ import {
   Brain, 
   CheckCircle, 
   BarChart2,
-  Plus
+  Plus,
+  User
 } from 'lucide-react';
 import '../styles/pages/home.css';
 
@@ -49,8 +52,20 @@ const Home = () => {
     <div className="home-container">
       <div className="home-header">
         <div className="welcome-section">
-          <h1>Welcome, {user?.firstName || 'Student'}!</h1>
-          <p>Let's continue your learning journey</p>
+          <div className="user-profile">
+            {user?.profileImage ? (
+              <img 
+                src={user.profileImage} 
+                alt="Profile" 
+                className="profile-picture"
+              />
+            ) : (
+              <div className="profile-placeholder">
+                <User size={24} />
+              </div>
+            )}
+            <h1>Welcome, {user?.firstName || 'Student'}!</h1>
+          </div>
         </div>
       </div>
 

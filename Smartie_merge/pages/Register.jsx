@@ -1,7 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { UserPlus, User, Mail, Lock } from 'lucide-react';
-import authService from '../services/auth';
+import { 
+  UserPlus, 
+  User, 
+  Mail, 
+  Lock,
+  Eye,
+  EyeOff,
+  Check,
+  X,
+  AlertTriangle,
+  Loader
+} from 'lucide-react';
+import authService from '../services/auth.service';
 import '../styles/pages/register.css';
 
 const Register = () => {
@@ -14,44 +25,120 @@ const Register = () => {
     password: '',
     confirmPassword: ''
   });
+
+  const [validations, setValidations] = useState({
+    minLength: false,
+    hasUpperCase: false,
+    hasLowerCase: false,
+    hasNumber: false,
+    hasSpecial: false,
+    passwordsMatch: false
+  });
+
+  const [showPassword, setShowPassword] = useState({
+    password: false,
+    confirmPassword: false
+  });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
+  useEffect(() => {
+    console.log('Current validations:', validations);
+    console.log('Current form data:', { ...formData, password: '[HIDDEN]' });
+    console.log('Is form valid:', isPasswordValid());
+  }, [validations, formData]);
+
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+
+    if (name === 'password') {
+      checkPasswordValidation(value, formData.confirmPassword);
+    } else if (name === 'confirmPassword') {
+      checkPasswordValidation(formData.password, value);
+    }
+
+    if (error) setError('');
+  };
+
+  const checkPasswordValidation = (password, confirmPass) => {
+    const newValidations = {
+      minLength: password.length >= 8,
+      hasUpperCase: /[A-Z]/.test(password),
+      hasLowerCase: /[a-z]/.test(password),
+      hasNumber: /[0-9]/.test(password),
+      hasSpecial: /[!@#$%^&*(),.?":{}|<>]/.test(password),
+      passwordsMatch: password === confirmPass && confirmPass !== ''
+    };
+    
+    setValidations(newValidations);
+    console.log('Password Validations:', newValidations);
+  };
+
+  const isPasswordValid = () => {
+    const allValidationsPass = Object.values(validations).every(Boolean);
+    
+    const allFieldsFilled = 
+      formData.firstName.trim() !== '' &&
+      formData.lastName.trim() !== '' &&
+      formData.email.trim() !== '' &&
+      formData.username.trim() !== '' &&
+      formData.password.trim() !== '' &&
+      formData.confirmPassword.trim() !== '';
+
+    console.log('All validations pass:', allValidationsPass);
+    console.log('All fields filled:', allFieldsFilled);
+
+    return allValidationsPass && allFieldsFilled;
+  };
+
+  const togglePasswordVisibility = (field) => {
+    setShowPassword(prev => ({
+      ...prev,
+      [field]: !prev[field]
+    }));
+  };
+
+  const validateEmail = (email) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
-    setError('');
-  
-    if (formData.password !== formData.confirmPassword) {
-      setError("Passwords don't match");
-      setIsLoading(false);
+    console.log('Form submission attempted');
+
+    if (!validateEmail(formData.email)) {
+      setError('Please enter a valid email address');
       return;
     }
-  
+
+    if (!isPasswordValid()) {
+      console.log('Form validation failed');
+      setError('Please ensure all fields are filled and password meets requirements');
+      return;
+    }
+
     try {
-      console.log('Registering with data:', {
-        ...formData,
-        password: '[HIDDEN]'
-      });
-  
-      await authService.register(formData);
-      console.log('Registration successful');
+      setIsLoading(true);
+      setError('');
       
-      // Automatically log in after successful registration
-      try {
-        await authService.login(formData.username, formData.password);
-        navigate('/dashboard');
-      } catch (loginErr) {
-        console.error('Auto-login failed:', loginErr);
-        navigate('/login');
-      }
+      console.log('Attempting registration...');
+      await authService.register({
+        firstName: formData.firstName.trim(),
+        lastName: formData.lastName.trim(),
+        email: formData.email.trim(),
+        username: formData.username.trim(),
+        password: formData.password
+      });
+      
+      console.log('Registration successful');
+      await authService.login(formData.username.trim(), formData.password);
+      console.log('Auto-login successful');
+      
+      navigate('/dashboard');
     } catch (err) {
       console.error('Registration error:', err);
       setError(err.message || 'Registration failed. Please try again.');
@@ -69,7 +156,12 @@ const Register = () => {
           <p>Join Smartie and start learning</p>
         </div>
 
-        {error && <div className="error-message">{error}</div>}
+        {error && (
+          <div className="error-message">
+            <AlertTriangle size={18} />
+            <span>{error}</span>
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="register-form">
           <div className="form-row">
@@ -81,6 +173,7 @@ const Register = () => {
                 name="firstName"
                 value={formData.firstName}
                 onChange={handleChange}
+                placeholder="Enter first name"
                 required
               />
             </div>
@@ -92,6 +185,7 @@ const Register = () => {
                 name="lastName"
                 value={formData.lastName}
                 onChange={handleChange}
+                placeholder="Enter last name"
                 required
               />
             </div>
@@ -108,6 +202,7 @@ const Register = () => {
               name="email"
               value={formData.email}
               onChange={handleChange}
+              placeholder="Enter email address"
               required
             />
           </div>
@@ -123,46 +218,110 @@ const Register = () => {
               name="username"
               value={formData.username}
               onChange={handleChange}
+              placeholder="Choose username"
               required
             />
           </div>
 
-          <div className="form-group">
+          <div className="form-group password-group">
             <label htmlFor="password">
               <Lock size={18} />
               Password
             </label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-            />
+            <div className="password-input-container">
+              <input
+                type={showPassword.password ? "text" : "password"}
+                id="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="Create password"
+                required
+              />
+              <button
+                type="button"
+                className="toggle-password-btn"
+                onClick={() => togglePasswordVisibility('password')}
+              >
+                {showPassword.password ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
+
+            <div className="password-requirements">
+              <ul>
+                <li className={validations.minLength ? 'valid' : ''}>
+                  {validations.minLength ? <Check size={16} /> : <X size={16} />}
+                  At least 8 characters
+                </li>
+                <li className={validations.hasUpperCase ? 'valid' : ''}>
+                  {validations.hasUpperCase ? <Check size={16} /> : <X size={16} />}
+                  One uppercase letter
+                </li>
+                <li className={validations.hasLowerCase ? 'valid' : ''}>
+                  {validations.hasLowerCase ? <Check size={16} /> : <X size={16} />}
+                  One lowercase letter
+                </li>
+                <li className={validations.hasNumber ? 'valid' : ''}>
+                  {validations.hasNumber ? <Check size={16} /> : <X size={16} />}
+                  One number
+                </li>
+                <li className={validations.hasSpecial ? 'valid' : ''}>
+                  {validations.hasSpecial ? <Check size={16} /> : <X size={16} />}
+                  One special character
+                </li>
+              </ul>
+            </div>
           </div>
 
-          <div className="form-group">
+          <div className="form-group password-group">
             <label htmlFor="confirmPassword">
               <Lock size={18} />
               Confirm Password
             </label>
-            <input
-              type="password"
-              id="confirmPassword"
-              name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              required
-            />
+            <div className="password-input-container">
+              <input
+                type={showPassword.confirmPassword ? "text" : "password"}
+                id="confirmPassword"
+                name="confirmPassword"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                placeholder="Confirm password"
+                required
+              />
+              <button
+                type="button"
+                className="toggle-password-btn"
+                onClick={() => togglePasswordVisibility('confirmPassword')}
+              >
+                {showPassword.confirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
+            {formData.confirmPassword && (
+              <div className="password-match">
+                <span className={validations.passwordsMatch ? 'valid' : 'invalid'}>
+                  {validations.passwordsMatch ? <Check size={16} /> : <X size={16} />}
+                  {validations.passwordsMatch ? 'Passwords match' : 'Passwords do not match'}
+                </span>
+              </div>
+            )}
           </div>
 
           <button 
             type="submit" 
             className={`register-button ${isLoading ? 'loading' : ''}`}
-            disabled={isLoading}
+            disabled={isLoading || !isPasswordValid()}
           >
-            {isLoading ? 'Creating Account...' : 'Register'}
+            {isLoading ? (
+              <>
+                <Loader className="animate-spin" size={18} />
+                <span>Creating Account...</span>
+              </>
+            ) : (
+              <>
+                <UserPlus size={18} />
+                <span>Create Account</span>
+              </>
+            )}
           </button>
         </form>
 
