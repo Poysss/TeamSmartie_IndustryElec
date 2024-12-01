@@ -8,7 +8,8 @@ import {
   BarChart2,
   BookOpen,
   ArrowRight,
-  RefreshCw
+  RefreshCw,
+  AlertTriangle
 } from 'lucide-react';
 import './QuizComplete.css';
 
@@ -26,6 +27,11 @@ const QuizComplete = () => {
     category
   } = location.state || {};
 
+  if (!score) {
+    navigate('/quiz');
+    return null;
+  }
+
   const getScoreColor = (score) => {
     if (score >= 90) return '#4CAF50';
     if (score >= 75) return '#FFC436';
@@ -40,10 +46,49 @@ const QuizComplete = () => {
     return 'Keep studying! You\'ll improve!';
   };
 
-  if (!score) {
-    navigate('/quiz');
-    return null;
-  }
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}m ${secs}s`;
+  };
+
+  const renderAnswer = (content, index) => {
+    const userAnswer = answers[index];
+    const isCorrect = content.answer.toLowerCase() === userAnswer?.toLowerCase();
+
+    return (
+      <div className="answer-comparison">
+        <div className="your-answer">
+          <strong>Your Answer:</strong>
+          <span className={isCorrect ? 'correct' : 'incorrect'}>
+            {userAnswer || 'Not answered'}
+          </span>
+        </div>
+        <div className="correct-answer">
+          <strong>Correct Answer:</strong>
+          <span>{content.answer}</span>
+        </div>
+        <div className="answer-explanation">
+          {isCorrect ? (
+            <>
+              <CheckCircle size={20} className="correct-icon" />
+              <p>Correct!</p>
+            </>
+          ) : (
+            <>
+              <XCircle size={20} className="incorrect-icon" />
+              <p>
+                {userAnswer ? 
+                  'Your answer doesn\'t match exactly. Remember to check spelling and wording.' 
+                  : 'No answer provided'
+                }
+              </p>
+            </>
+          )}
+        </div>
+      </div>
+    );
+  };
 
   return (
     <div className="quiz-complete-container">
@@ -54,12 +99,12 @@ const QuizComplete = () => {
         </div>
       </div>
 
-      <div className="score-card">
+      <div className="score-section">
         <div className="score-circle" style={{ '--score-color': getScoreColor(score) }}>
           <Trophy size={32} />
           <span className="score-value">{score}%</span>
-          <span className="score-message">{getScoreMessage(score)}</span>
         </div>
+        <div className="score-message">{getScoreMessage(score)}</div>
       </div>
 
       <div className="stats-grid">
@@ -82,7 +127,7 @@ const QuizComplete = () => {
         <div className="stat-card time">
           <Clock size={24} />
           <div className="stat-info">
-            <span className="stat-value">{Math.round(timeSpent / 60)}m {timeSpent % 60}s</span>
+            <span className="stat-value">{formatTime(timeSpent)}</span>
             <span className="stat-label">Time Taken</span>
           </div>
         </div>
@@ -116,16 +161,7 @@ const QuizComplete = () => {
               )}
             </div>
             <p className="question-text">{content.question}</p>
-            <div className="answer-comparison">
-              <div className="your-answer">
-                <strong>Your Answer:</strong>
-                <span>{answers[index] || 'Not answered'}</span>
-              </div>
-              <div className="correct-answer">
-                <strong>Correct Answer:</strong>
-                <span>{content.answer}</span>
-              </div>
-            </div>
+            {renderAnswer(content, index)}
           </div>
         ))}
       </div>
