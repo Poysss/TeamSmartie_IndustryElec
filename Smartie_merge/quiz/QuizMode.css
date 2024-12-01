@@ -116,24 +116,21 @@
   animation: slideUp 0.3s ease-out;
 }
 
-.question-content {
+.identification-question {
   text-align: center;
   margin-bottom: 2rem;
 }
 
-.question-content h2 {
+.identification-question h2 {
   color: var(--accent);
   font-size: 1.2rem;
   margin-bottom: 1rem;
 }
 
-.question-content p {
+.question-text {
   color: white;
   font-size: 1.5rem;
   line-height: 1.6;
-}
-
-.answer-section {
   margin-bottom: 2rem;
 }
 
@@ -271,33 +268,46 @@
   transform: translateY(-2px);
 }
 
-.back-button {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: var(--accent);
-  color: var(--primary-dark);
-  border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: all 0.3s ease;
+/* Timer Styles */
+.timer.warning {
+  background: #FF5252;
+  color: white;
+  animation: pulse 1s infinite;
 }
 
-.back-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(255, 196, 54, 0.3);
-}
-
-.animate-spin {
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
   }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+/* Progress Bar */
+.quiz-progress {
+  margin-bottom: 2rem;
+}
+
+.progress-bar {
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--accent);
+  transition: width 0.3s ease;
+}
+
+.progress-stats {
+  display: flex;
+  justify-content: space-between;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.9rem;
 }
 
 @keyframes fadeIn {
@@ -320,23 +330,20 @@
   }
 }
 
-/* Additional styles for mobile responsiveness */
+/* Media Queries */
 @media (max-width: 768px) {
   .quiz-mode-container {
     padding: 1rem;
-  }
-
-  .question-content p {
-    font-size: 1.2rem;
+    padding-top: 80px;
   }
 
   .navigation-buttons {
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 1rem;
   }
 
-  .submit-modal {
-    width: 95%;
-    padding: 1.5rem;
+  .nav-btn,
+  .submit-btn {
+    width: 100%;
   }
 }
