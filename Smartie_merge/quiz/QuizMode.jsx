@@ -1,16 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { 
-  ArrowLeft, 
-  ArrowRight, 
+import {
+  ArrowLeft,
+  ArrowRight,
   Flag,
   Clock,
   AlertTriangle,
   CheckCircle,
   XCircle,
-  HelpCircle,
   Loader,
-  BookOpen 
+  BookOpen
 } from 'lucide-react';
 import quizService from '../../services/quiz.service';
 import './QuizMode.css';
@@ -22,7 +21,7 @@ const QuizMode = () => {
   const [contents, setContents] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState({});
-  const [timeLeft, setTimeLeft] = useState(600); // 10 minutes
+  const [timeLeft, setTimeLeft] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [showConfirmSubmit, setShowConfirmSubmit] = useState(false);
@@ -33,7 +32,9 @@ const QuizMode = () => {
   useEffect(() => {
     loadQuiz();
     return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
     };
   }, [quizId]);
 
@@ -41,17 +42,20 @@ const QuizMode = () => {
     try {
       setLoading(true);
       setError('');
-      console.log('Loading quiz:', quizId);
-
       const quizData = await quizService.getQuizById(quizId);
-      console.log('Quiz data loaded:', quizData);
 
       if (!quizData.contents || quizData.contents.length === 0) {
         throw new Error('No questions available for this quiz');
       }
 
+      let quizContents = [...quizData.contents];
+      if (quizData.randomizeQuestions) {
+        quizContents = shuffleArray(quizContents);
+      }
+
       setQuiz(quizData);
-      setContents(quizData.contents.sort((a, b) => a.numberOfQuestion - b.numberOfQuestion));
+      setContents(quizContents);
+      setTimeLeft(quizData.timeLimit || getTimeLimit(quizData.difficultyLevel));
       startTimer();
     } catch (err) {
       console.error('Error loading quiz:', err);
@@ -61,11 +65,35 @@ const QuizMode = () => {
     }
   };
 
+  const shuffleArray = (array) => {
+    let currentIndex = array.length, randomIndex;
+    while (currentIndex !== 0) {
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex--;
+      [array[currentIndex], array[randomIndex]] = 
+      [array[randomIndex], array[currentIndex]];
+    }
+    return array;
+  };
+
+  const getTimeLimit = (difficulty) => {
+    switch (difficulty) {
+      case 'EASY': return 600;
+      case 'MEDIUM': return 300;
+      case 'HARD': return 180;
+      default: return 300;
+    }
+  };
+
   const startTimer = () => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+    }
+
     startTimeRef.current = Date.now();
     timerRef.current = setInterval(() => {
       setTimeLeft(prev => {
-        if (prev <= 1) {
+        if (prev <= 0) {
           clearInterval(timerRef.current);
           handleAutoSubmit();
           return 0;
@@ -88,7 +116,7 @@ const QuizMode = () => {
   const handleAnswer = (answer) => {
     setAnswers(prev => ({
       ...prev,
-      [currentIndex]: answer.trim()
+      [currentIndex]: answer
     }));
   };
 
@@ -109,8 +137,8 @@ const QuizMode = () => {
     const incorrectAnswers = [];
 
     contents.forEach((content, index) => {
-      const userAnswer = answers[index]?.toLowerCase() || '';
-      const correctAnswer = content.answer.toLowerCase();
+      const userAnswer = answers[index]?.toString().toLowerCase().trim() || '';
+      const correctAnswer = content.answer.toLowerCase().trim();
 
       if (userAnswer === correctAnswer) {
         correctCount++;
@@ -147,11 +175,10 @@ const QuizMode = () => {
       setIsSubmitting(true);
       const results = calculateResults();
 
-      console.log('Submitting quiz results:', results);
       await quizService.submitQuiz(quiz.quizModeId, {
         ...results,
         difficultyLevel: quiz.difficultyLevel,
-        typeOfQuiz: quiz.typeOfQuiz
+        typeOfQuiz: 'IDENTIFICATION'
       });
 
       navigate(`/quiz/complete/${quiz.quizModeId}`, { 
@@ -163,7 +190,8 @@ const QuizMode = () => {
           answers,
           contents,
           subject: quiz.flashCard.subject,
-          category: quiz.flashCard.category
+          category: quiz.flashCard.category,
+          quizType: 'IDENTIFICATION'
         }
       });
     } catch (err) {
@@ -174,18 +202,11 @@ const QuizMode = () => {
     }
   };
 
-  const getProgressPercentage = () => {
-    const answered = Object.keys(answers).length;
-    return Math.round((answered / contents.length) * 100);
-  };
-
   if (loading) {
     return (
       <div className="quiz-loading">
-        <div className="loading-content">
-          <Loader className="animate-spin" size={24} />
-          <span>Loading quiz...</span>
-        </div>
+        <Loader className="animate-spin" size={24} />
+        <span>Loading quiz...</span>
       </div>
     );
   }
@@ -193,26 +214,16 @@ const QuizMode = () => {
   if (error) {
     return (
       <div className="quiz-error">
-        <div className="error-content">
-          <AlertTriangle size={48} color="#FFC436" />
-          <h2>Unable to Load Quiz</h2>
-          <p>{error}</p>
-          <button 
-            className="back-button"
-            onClick={() => navigate('/flashcards')}
-          >
-            <ArrowLeft size={20} />
-            Back to Flashcards
-          </button>
-        </div>
+        <AlertTriangle size={48} />
+        <h2>Error</h2>
+        <p>{error}</p>
+        <button onClick={() => navigate('/quiz')} className="back-btn">
+        <ArrowLeft size={20} />
+          Back to Quizzes
+        </button>
       </div>
     );
   }
-
-  const currentQuestion = contents[currentIndex];
-  const answeredCount = Object.keys(answers).length;
-  const totalQuestions = contents.length;
-  const progressPercentage = getProgressPercentage();
 
   return (
     <div className="quiz-mode-container">
@@ -222,7 +233,7 @@ const QuizMode = () => {
           <div className="quiz-meta">
             <span className="category-badge">{quiz.flashCard.category}</span>
             <span className="difficulty-badge">{quiz.difficultyLevel}</span>
-            <span className="timer">
+            <span className={`timer ${timeLeft <= 60 ? 'warning' : ''}`}>
               <Clock size={20} />
               {formatTime(timeLeft)}
             </span>
@@ -234,26 +245,19 @@ const QuizMode = () => {
         <div className="progress-bar">
           <div 
             className="progress-fill"
-            style={{ width: `${progressPercentage}%` }}
+            style={{ width: `${((currentIndex + 1) / contents.length) * 100}%` }}
           />
         </div>
         <div className="progress-stats">
-          <span>
-            Question {currentIndex + 1} of {totalQuestions}
-          </span>
-          <span>
-            {answeredCount} Answered
-          </span>
+          <span>Question {currentIndex + 1} of {contents.length}</span>
+          <span>{Object.keys(answers).length} Answered</span>
         </div>
       </div>
 
       <div className="question-container">
-        <div className="question-content">
+        <div className="identification-question">
           <h2>Question {currentIndex + 1}</h2>
-          <p>{currentQuestion.question}</p>
-        </div>
-
-        <div className="answer-section">
+          <p className="question-text">{contents[currentIndex].question}</p>
           <textarea
             className="answer-input"
             value={answers[currentIndex] || ''}
@@ -313,9 +317,9 @@ const QuizMode = () => {
           <div className="submit-modal" onClick={e => e.stopPropagation()}>
             <h3>Submit Quiz?</h3>
             <p>
-              You have answered {answeredCount} out of {totalQuestions} questions.
-              {answeredCount < totalQuestions && 
-                ` ${totalQuestions - answeredCount} questions are still unanswered.`}
+              You have answered {Object.keys(answers).length} out of {contents.length} questions.
+              {Object.keys(answers).length < contents.length && 
+                ` ${contents.length - Object.keys(answers).length} questions are still unanswered.`}
             </p>
             <div className="submit-actions">
               <button 
